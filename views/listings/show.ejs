@@ -1,20 +1,26 @@
 <% layout("layouts/boilerplate.ejs")-%>
+<style>
+    .attributes {
+        font-weight: 500;
+    }
+</style>
 <div class="row">
-    <div class="col-8 offset-3 mt-3">
+    <div class="col-8 offset-md-2 mt-3">
         <h3><%=listing.title%></h3>
+        <h4><%=listing.location%>, <%=listing.country%></h4>
     </div>
-        <div class="card col-12 col-md-6 offset-md-3 listings-card">
+        <div class="card col-12 col-md-6 offset-md-2 listings-card">
             <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing image">
             <div class="card-body">
-                <p class="card-text">Owned by : <i><%= listing.owner.username%></i></p>
-                <p class="card-text"><%=listing.description%></p>
-                <p class="card-text"> &#8377;<%=listing.price.toLocaleString("en-IN")%> / night</p>
-                <p class="card-text"> <%=listing.location%></p>
-                <p class="card-text"> <%=listing.country%></p>
+                <p class="card-text">Owned by : <b><i><%= listing.owner.username%></i></b></p>
+                <p class="card-text attributes"><%=listing.description%></p>
+                <p class="card-text attributes">Price : &#8377;<%=listing.price.toLocaleString("en-IN")%> / night</p>
+                <p class="card-text attributes">City : <%=listing.location%></p>
+                <p class="card-text attributes">Country : <%=listing.country%></p>
             </div>
         </div>
         <%if(currUser && listing.owner._id.equals(currUser._id)){%>
-            <div class="col-12 col-md-6 offset-md-3 mt-3 d-flex justify-content-center justify-content-md-start gap-3">
+            <div class="col-12 col-md-6 offset-md-2 mt-3 d-flex justify-content-center justify-content-md-start gap-3">
                 <a href="/listings/<%= listing._id%>/edit" class="btn btn-dark edit-btn">
                     Edit
                 </a>
@@ -27,8 +33,9 @@
             </div>
         <%}%>
 
-    <div class="col-8 offset-3 ">
+    <div class="col-md-8 col-10 offset-1 offset-md-2 ">
     <% if(currUser) {%>
+        <br>
         <hr>
         <h4>Leave a Review</h4>
         <form action="/listings/<%= listing._id%>/review" method="POST" class="mb-3 needs-validation" novalidate>
@@ -65,16 +72,17 @@
 
         <div class="row">
             <%for(review of listing.reviews){%>
-                <div class="card col-5 ms-3 mb-3">
+                <div class="card col-md-5 col-10 ms-3 mb-3">
                     <div class="card-body">
                         <h5 class="card-title">@<%= review.author.username %></h5>
                         <p class="starability-result card-text" data-rating="<%= review.rating%>"></p>
-                        <div class="card-text"><%= review.comment%></div>
-                        <!-- <div class="card-text"> stars</div> -->
+                        <div class="card-text mb-3"><%= review.comment%></div>
                     </div>
+                    <%if(currUser && review.author._id.equals(currUser._id)) {%>
                     <form action="/listings/<%=listing._id%>/review/<%=review._id%>?_method=DELETE" method="POST" class="mb-3">
                         <button class="btn btn-sm btn-dark">Delete</button>
                     </form>
+                    <%}%>
                 </div>
             <%}%>
         </div>
